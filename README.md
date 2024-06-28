@@ -1,66 +1,95 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ТЕСТОВОЕ ЗАДАНИЕ ПРОКСИ ЧЕКЕР
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Кратка выжимка ТЗ
 
-## About Laravel
+Требуется написать чекер прокси, предпочтительно на фреймворке Laravel.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Основные разделы
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. **Проверка прокси**: ввод прокси в формате ip:port, проверка с максимальной скоростью, многопоточность.
+2. **История проверок**: архив с датой, временем, количеством прокси и их статусом.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Результаты работы скрипта
 
-## Learning Laravel
+- **IP:Port**
+- **Тип прокси (HTTP/SOCKS)**
+- **Страна/город прокси**
+- **Статус (работает/не работает)**
+- **Скорость скачивания или таймаут**
+- **Реальный внешний IP прокси**
+- **Общее количество проверенных прокси и количество рабочих**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Дополнительные пункты (по возможности)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Раздел архива с детальной информацией по проверкам**
+- **Показ результатов и прогресс-бар проверки AJAX'ом**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Важные моменты
 
-## Laravel Sponsors
+- **Качество кода, его структура и соответствие конвенциям**
+- **Задавать вопросы для комфортного общения**
+- **Использование предыдущего опыта и кода**
+- **Комментирование кода для удобства чтения**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Проблемы и нереализованный функционал за пробный день
 
-### Premium Partners
+1. **Выбранный geolocation api показался наиболее подходящим под задачу, но при проведении тестирования приложения начал отдавать 403 ошибку из-за запросов внутри сервиса, запросы с postman и tinker принимал**
+2. **Не реализован графический интерфейс (не хватило времени)**
+3. **Не закончен дебаг проекта. Не хватило рабочего дня на проведение дебага всего написанного функционала + наложившаяся ошибка 403 затруднила дебаг**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## О проекте
 
-## Contributing
+В рамках ТЗ был написан CheckerProxyConnector выполняющий функцию общения с https://api.ipgeolocation.io/ipgeo. Коннектор необходим исключительно для общения между сервисами и не более.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Написан ProxyCheckerServiceProvider для внедрения коннектора в код через DI тем самым упростив локаничность и понимание кода
 
-## Code of Conduct
+Созданы роуты в api.php для общения с апи нашего прокси-чекера:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. **POST api/proxy-checker**: необходим для запуска проверки проксей, принимает аргумент proxies
+2. **GET api/proxy-checker/archive**: выполняет функцию получения всех проксей по группам которые проверялись ранее
+3. **api/proxy-checker/{proxyGroup}**: выполняет функцию получения проксей по конкретной группе. Необходим для отображения информации о проверенных прокси из первого запроса.
 
-## Security Vulnerabilities
+---------------
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Написаны Модели Proxy и ProxyGroup
 
-## License
+1. **Proxy**: список проверяемых Proxy
+2. **ProxyGroup**: объединяет прокси по проводимым поискам и сигнализирует о статусе проверки списка проксей за счёт state
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Был написан ProxyCheckerController для обрабатки маршрутов. Опишем флоу методов:
+
+### checkProxy
+
+1. **Валидирует значения за счёт CheckProxyRequest**
+2. **За счёт try...catch определяет какой response подходит**
+3. **Делегирует задачу по проверки полученных прокси в ProxyCheckerActon**
+4. **ProxyCheckerAction**:
+   1. **Принимает список прокси**
+   2. **Запускает транзакцию для отмены обработки всех проксей, если есть проблемы с общим объёмом данных**
+   3. **Создаёт группу проксей для объединения проксей**
+   4. **Разбивает проксю на ip и port создавая запись в БД**
+   5. **Вызывается event ProxyCreatedEvent принимающий проксю**
+   6. **Вызывается CheckProxyListener, который привязан к event в AppServiceProvider**
+   7. **Listener производит диспатч CheckProxyJob для проверки прокси через geolocationApi**
+   8. **CheckProxyJob**:
+      1. **За счёт DI принимает в себя Connector**
+      2. **Начинает просчёт timeout проверки прокси через microtime**
+      3. **Получает данные о проксе за счёт коннектора**
+      4. **Декодирует данные ответа от коннектора и записывает в них Timeout**
+      5. **Создаёт DTO на основании полученных данных**
+      6. **Обновляет прокси используя DTO и вызывает тем самым ProxyUpdatedEvent**
+   9. **ProxyUpdatedEvent**
+      1. **Привызывается к CheckProxyGroupListener в AppServiceProvider**
+      2. **CheckProxyGroupListener**
+         1. **при обновлении проксей проверяет сколько проксей ещё имеют статус processing**
+         2. **определить когда проверка проксей завершена и обновить state группы проксей на finished**
+
+### checkProxyList
+
+1. **Принимает в себя ProxyGroup за счёт роут биндинга**
+2. **ПРоверяет статус группы для проведения long pool опроса, если проверка группы проксей ещё не завершена**
+3. **Если группа проверена, то возвращается список проксей (можно дополнить также сколько из скольки проксей было проверено)**
+
+### getArchiveProxy
+
+1. **Запрос в БД на получение всех ранее проверяемых групп, которые имеют статус finished**
