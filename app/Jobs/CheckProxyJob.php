@@ -39,7 +39,7 @@ class CheckProxyJob implements ShouldQueue
             $proxyInfo['timeout'] = round(($end - $start) * 1000, 2);
 
             $data = ProxyData::fromArray(json_decode($response, true));
-            logger('aaaaaaa', [$this->proxy]);
+
             $this
                 ->proxy
                 ->update($data->toArray());
